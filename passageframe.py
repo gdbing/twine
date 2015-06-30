@@ -147,12 +147,64 @@ class PassageFrame(wx.Frame):
             helpMenu.Append(PassageFrame.HELP5, 'About Tags')
             self.Bind(wx.EVT_MENU, lambda e: wx.LaunchDefaultBrowser('http://twinery.org/wiki/tag'), id = PassageFrame.HELP5)
 
+        # emacs hotkeys menu
+        if sys.platform == "darwin":
+            emacsMenu = wx.Menu()
+            emacsMenu.Append(wx.stc.STC_CMD_LINEUP, '&prev line\tRawCtrl-P')
+            self.Bind(wx.EVT_MENU, lambda e: self.bodyInput.LineUp(), id = wx.stc.STC_CMD_LINEUP)
+            emacsMenu.Append(wx.stc.STC_CMD_LINEUPEXTEND, '&prev line extend\tRawCtrl-Shift-P')
+            self.Bind(wx.EVT_MENU, lambda e: self.bodyInput.LineUpExtend(), id = wx.stc.STC_CMD_LINEUPEXTEND)
+            emacsMenu.Append(wx.stc.STC_CMD_LINEDOWN, '&next line\tRawCtrl-N')
+            self.Bind(wx.EVT_MENU, lambda e: self.bodyInput.LineDown(), id = wx.stc.STC_CMD_LINEDOWN)
+            emacsMenu.Append(wx.stc.STC_CMD_LINEDOWNEXTEND, '&next line extend\tRawCtrl-Shift-N')
+            self.Bind(wx.EVT_MENU, lambda e: self.bodyInput.LineDownExtend(), id = wx.stc.STC_CMD_LINEDOWNEXTEND)
+
+            emacsMenu.Append(wx.stc.STC_CMD_CHARLEFT, '&caret left\tRawCtrl-B')
+            self.Bind(wx.EVT_MENU, lambda e: self.bodyInput.CharLeft(), id = wx.stc.STC_CMD_CHARLEFT)
+            emacsMenu.Append(wx.stc.STC_CMD_CHARLEFTEXTEND, '&caret left extend\tRawCtrl-Shift-B')
+            self.Bind(wx.EVT_MENU, lambda e: self.bodyInput.CharLeftExtend(), id = wx.stc.STC_CMD_CHARLEFTEXTEND)
+            emacsMenu.Append(wx.stc.STC_CMD_CHARRIGHT, '&caret right\tRawCtrl-F')
+            self.Bind(wx.EVT_MENU, lambda e: self.bodyInput.CharRight(), id = wx.stc.STC_CMD_CHARRIGHT)
+            emacsMenu.Append(wx.stc.STC_CMD_CHARRIGHTEXTEND, '&caret right extend\tRawCtrl-Shift-F')
+            self.Bind(wx.EVT_MENU, lambda e: self.bodyInput.CharRightExtend(), id = wx.stc.STC_CMD_CHARRIGHTEXTEND)
+
+            #TODO: wordright jumps too far, past space
+            emacsMenu.Append(wx.stc.STC_CMD_WORDLEFT, '&word left\tRawCtrl-Alt-B')
+            self.Bind(wx.EVT_MENU, lambda e: self.bodyInput.WordLeft(), id = wx.stc.STC_CMD_WORDLEFT)
+            emacsMenu.Append(wx.stc.STC_CMD_WORDLEFTEXTEND, '&word left extend\tRawCtrl-Alt-Shift-B')
+            self.Bind(wx.EVT_MENU, lambda e: self.bodyInput.WordLeftExtend(), id = wx.stc.STC_CMD_WORDLEFTEXTEND)
+            emacsMenu.Append(wx.stc.STC_CMD_WORDRIGHT, '&word right\tRawCtrl-Alt-F')
+            self.Bind(wx.EVT_MENU, lambda e: self.bodyInput.WordRight(), id = wx.stc.STC_CMD_WORDRIGHT)
+            emacsMenu.Append(wx.stc.STC_CMD_WORDRIGHTEXTEND, '&word right extend\tRawCtrl-Alt-Shift-F')
+            self.Bind(wx.EVT_MENU, lambda e: self.bodyInput.WordRightExtend(), id = wx.stc.STC_CMD_WORDRIGHTEXTEND)
+
+            emacsMenu.Append(wx.stc.STC_CMD_LINEENDDISPLAY, '&to line end\tRawCtrl-E')
+            self.Bind(wx.EVT_MENU, lambda e: self.bodyInput.LineEnd(), id = wx.stc.STC_CMD_LINEENDDISPLAY)
+            emacsMenu.Append(wx.stc.STC_CMD_LINEENDDISPLAYEXTEND, '&to line end extend\tRawCtrl-Shift-E')
+            self.Bind(wx.EVT_MENU, lambda e: self.bodyInput.LineEndExtend(), id = wx.stc.STC_CMD_LINEENDDISPLAYEXTEND)
+            emacsMenu.Append(wx.stc.STC_CMD_HOMEDISPLAY, '&to line start\tRawCtrl-A')
+            self.Bind(wx.EVT_MENU, lambda e: self.bodyInput.Home(), id = wx.stc.STC_CMD_HOMEDISPLAY)
+            emacsMenu.Append(wx.stc.STC_CMD_HOMEDISPLAYEXTEND, '&to line start extend\tRawCtrl-Shift-A')
+            self.Bind(wx.EVT_MENU, lambda e: self.bodyInput.HomeExtend(), id = wx.stc.STC_CMD_HOMEDISPLAYEXTEND)
+
+            #del fwd, del word fwd, back
+            # self.bodyInput.DelWordLeft()
+            # self.bodyInput.DelWordRight()
+
+            editMenu.Append(wx.stc.STC_CMD_LINECUT, '&Kill\tRawCtrl-K')
+            self.Bind(wx.EVT_MENU, lambda e: self.bodyInput.LineEndExtend() | wx.Window.FindFocus().Cut(), id = wx.stc.STC_CMD_LINECUT)
+            editMenu.Append(wx.ID_PASTE, '&Yank\tRawCtrl-Y')
+
+
+
         # menus
 
         self.menus = wx.MenuBar()
         self.menus.Append(passageMenu, '&Passage')
         self.menus.Append(editMenu, '&Edit')
         self.menus.Append(helpMenu, '&Help')
+        if sys.platform == "darwin":
+            self.menus.Append(emacsMenu, '&Emacs Hotkey Hack')
         self.SetMenuBar(self.menus)
 
         # controls
